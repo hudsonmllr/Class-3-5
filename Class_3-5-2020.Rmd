@@ -1,0 +1,37 @@
+---
+title: "3/5/2020"
+author: "Hudson Miller"
+date: "3/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+``` {r, echo=FALSE, include=FALSE}
+library(googlesheets4)
+library(janitor)
+library(fs)
+library(tidyverse)
+library(moderndive)
+```
+
+```{r , ech=FALSE, include=FALSE}
+
+sheets_deauth()
+
+ x <- read_sheet(ss ="https://docs.google.com/spreadsheets/d/14HmwN2cEVAJHupuehCuLdwG9BXtR3COrxDgaaylLhkA") %>%  clean_names()
+ 
+```
+
+```  {r, echo=FALSE}
+
+x <- x %>% mutate(Total=(red +white)) %>% mutate(per_white=(white/Total)) %>% mutate(per_red=(red/Total)) %>%  arrange(desc(red))
+
+ggplot(x, aes(per_red)) + geom_histogram(bins=30)
+
+urn <- tibble(bean_ID = 1:10000, color=c(rep("red",2000), rep("white", 8000)))
+
+```
