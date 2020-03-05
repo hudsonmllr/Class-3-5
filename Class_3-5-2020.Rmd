@@ -16,6 +16,7 @@ library(janitor)
 library(fs)
 library(tidyverse)
 library(moderndive)
+library(infer)
 ```
 
 ```{r , ech=FALSE, include=FALSE}
@@ -32,6 +33,37 @@ x <- x %>% mutate(Total=(red +white)) %>% mutate(per_white=(white/Total)) %>% mu
 
 ggplot(x, aes(per_red)) + geom_histogram(bins=30)
 
-urn <- tibble(bean_ID = 1:10000, color=c(rep("red",2000), rep("white", 8000)))
+my_urn <- tibble(bean_ID = 1:10000, color=c(rep("red",2000), rep("white", 8000)))
 
+
+my_urn %>% 
+  rep_sample_n(size = 25, reps = 1) %>% 
+  summarize(reds = sum(color == "red")) %>% 
+  mutate(perc_red = reds/25)
+
+balls <- my_urn %>% 
+  rep_sample_n(size = 25, reps = 51) %>% 
+  summarize(reds = sum(color == "red")) %>% 
+  mutate(perc_red = reds/25) %>% 
+  arrange(desc(perc_red))
+ggplot(balls, aes(perc_red)) + geom_histogram()
+
+
+simulate_class <- function(urn) {
+  urn %>% 
+    rep_sample_n(size = 25, reps = 1) %>% 
+    summarize(reds = sum(color == "red")) %>% 
+    mutate(perc_red = reds/25)
+}
+simulate_class(my_urn)
+
+
+```
+
+
+ˆ
+```{r}
+simulate_classes <- function(n) {
+  map_int(rep(1,n), ~ simulate_class())  
+}
 ```
